@@ -9,18 +9,15 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
 # Copy the requirements file and install dependencies
-COPY requirement.txt /app/
-RUN pip install --no-cache-dir -r requirement.txt
+COPY requirement.txt requirement.txt
+
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application code
-COPY . /app/
-
-# Run migrations and collect static files
-RUN python manage.py migrate
-RUN python manage.py collectstatic --noinput
+COPY . .
 
 # Expose the port the app runs on
 EXPOSE 8000
 
-# Command to run the application
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "baoiam.wsgi:application"]
+# Command to run the application using Django's development server
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
